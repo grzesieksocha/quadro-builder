@@ -1,4 +1,4 @@
-import { launch } from "puppeteer";
+import { Browser, launch } from "puppeteer";
 
 async function startBrowser() {
   // let browser: Browser | null = null;
@@ -14,6 +14,12 @@ async function startBrowser() {
   // }
 
   return browser;
+}
+
+export async function stopBrowser(browserInstance: Promise<Browser>) {
+  const browser = await browserInstance;
+
+  await browser.close();
 }
 
 export default startBrowser;
