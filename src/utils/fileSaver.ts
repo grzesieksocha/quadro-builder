@@ -3,18 +3,31 @@ import { access, writeFile, mkdir } from "node:fs/promises";
 
 export async function saveFile(dir: string, file: string, buffer: Buffer) {
   try {
-    await access(`${dir}/${file}`);
-  } catch {
-    try {
-      await access(dir, constants.W_OK);
-    } catch {
-      await mkdir(dir, { recursive: true });
-    }
+    await fileExists(`${dir}/${file}`);
 
-    try {
-      await writeFile(`${dir}/${file}`, buffer);
-    } catch (err) {
-      return console.error(err);
-    }
+    console.log(`'${file}' exists - skipping save`);
+  } catch {
+    await createDir(dir);
+    await write(`${dir}/${file}`, buffer);
+  }
+}
+
+export async function fileExists(path: string) {
+  await access(path);
+}
+
+async function write(path: string, buffer: Buffer) {
+  try {
+    await writeFile(path, buffer);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function createDir(dir: string) {
+  try {
+    await access(dir, constants.W_OK);
+  } catch {
+    await mkdir(dir, { recursive: true });
   }
 }
