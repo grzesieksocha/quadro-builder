@@ -1,12 +1,14 @@
 import { NodeFor, Page } from "puppeteer";
+import getImages from "./pictureExtractor";
 
 export interface ConstructionKit {
   name: string;
   link: string;
   pictureURL: string;
+  pictureName: string;
 }
 
-async function getConstructionKits(page: Page): Promise<ConstructionKit[]> {
+async function getConstructionKits(page: Page): Promise<void> {
   const constructionKits = await page.$$eval(
     ".kit.views-row",
     (constructionDivs) => {
@@ -18,7 +20,12 @@ async function getConstructionKits(page: Page): Promise<ConstructionKit[]> {
         const pictureURL = el.querySelector("picture img").src;
 
         if (link) {
-          constructionKits.push({ name, link, pictureURL });
+          constructionKits.push({
+            name,
+            link,
+            pictureURL,
+            pictureName: `${name.toLowerCase().replace(/ /g, "_")}.png`,
+          });
         }
       };
 
@@ -30,7 +37,7 @@ async function getConstructionKits(page: Page): Promise<ConstructionKit[]> {
     }
   );
 
-  return constructionKits;
+  await getImages(page, constructionKits);
 }
 
 export default getConstructionKits;

@@ -1,4 +1,4 @@
-import startBrowser from "./browser";
+import startBrowser from "./browser/browser";
 import scraperController from "./pageController";
 
 const browser = startBrowser();

@@ -1,6 +1,5 @@
 import { Browser } from "puppeteer";
 import getConstructionKits from "./constructionKitsScraper";
-import getImages from "./pictureExtractor";
 
 const URL = "https://quadromdb.com/";
 
@@ -11,9 +10,7 @@ async function scraper(browser: Browser) {
 
   await page.waitForSelector(".views-element-container");
 
-  const divs = await getConstructionKits(page);
-  await getImages(page, divs);
-  console.log(divs);
+  await getConstructionKits(page);
 }
 
 export default scraper;
