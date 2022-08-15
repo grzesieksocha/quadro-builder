@@ -1,16 +1,14 @@
 import { Browser } from "puppeteer";
-import getConstructionKits from "./constructionKitsScraper";
+import getSet from "./scrapers/set";
 
-const URL = "https://quadromdb.com/";
+const CONSTRUCTION_KIT_ROW_SELECTOR = ".kit.views-row";
+const EXTENSION_ROW_SELECTOR = ".expansion.views-row";
 
 async function scraper(browser: Browser) {
   const page = await browser.newPage();
-  console.log(`Navigating to ${URL}...`);
-  await page.goto(URL);
 
-  await page.waitForSelector(".views-element-container");
-
-  await getConstructionKits(page);
+  await getSet(page, CONSTRUCTION_KIT_ROW_SELECTOR, "construction_set");
+  await getSet(page, EXTENSION_ROW_SELECTOR, "extension");
 }
 
 export default scraper;

@@ -1,13 +1,13 @@
 import { Page } from "puppeteer";
-import { ConstructionKit } from "./constructionKitsScraper";
+import { Set } from "./objects";
 import { fileExists, saveFile } from "./utils/fileSaver";
 
-const PICTURE_FOLDER = "data/picture/construction_kit";
-
-export default async function getImages(page: Page, kits: ConstructionKit[]) {
+export default async function getImages(page: Page, kits: Set[]) {
   for (const kit of kits) {
+    const folder = `data/picture/${kit.type}`;
+
     try {
-      await fileExists(`${PICTURE_FOLDER}/${kit.pictureName}`);
+      await fileExists(`${folder}/${kit.pictureName}`);
 
       console.log(`'${kit.pictureName}' exists - skipping save (pre fetch)`);
 
@@ -17,7 +17,7 @@ export default async function getImages(page: Page, kits: ConstructionKit[]) {
 
       if (pictureSource) {
         const buffer = await pictureSource.buffer();
-        saveFile(PICTURE_FOLDER, kit.pictureName, buffer);
+        saveFile(folder, kit.pictureName, buffer);
       }
     }
   }
