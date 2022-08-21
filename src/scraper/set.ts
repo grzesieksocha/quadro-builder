@@ -1,13 +1,14 @@
 import { NodeFor, Page } from "puppeteer";
-import { Set } from "../objects";
+import { Set, SetType } from "../objects";
 import getImages from "../pictureExtractor";
+import { insertConstructionKit } from "../service/db";
 
 const URL = "https://quadromdb.com/";
 
 async function getSet(
   page: Page,
   selector: string,
-  type: string
+  type: SetType
 ): Promise<void> {
   page.goto(URL);
   await page.waitForSelector(".views-element-container");
@@ -18,15 +19,15 @@ async function getSet(
       const sets: Set[] = [];
 
       const setAdder = (el: NodeFor<string>) => {
-        const link = el.querySelector("a").href;
+        const url = el.querySelector("a").href;
         const name = el.querySelector(".mdb-cat-meta-title").innerHTML;
         const pictureURL = el.querySelector("picture img").src;
 
-        if (link) {
+        if (url) {
           sets.push({
             type,
             name,
-            link,
+            url,
             pictureURL,
             pictureName: `${name.toLowerCase().replace(/ /g, "_")}.png`,
           });
@@ -42,7 +43,9 @@ async function getSet(
     type
   );
 
-  console.log(sets);
+  for (const set of sets) {
+    insertConstructionKit(set.name, set.type, set.url, set.pictureName);
+  }
 
   await getImages(page, sets);
 }

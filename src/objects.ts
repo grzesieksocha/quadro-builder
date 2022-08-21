@@ -1,7 +1,9 @@
+export type SetType = "construction_kit" | "extension";
+
 export interface Set {
-  type: string;
+  type: SetType;
   name: string;
-  link: string;
+  url: string;
   pictureURL: string;
   pictureName: string;
 }
