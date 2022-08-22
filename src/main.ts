@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import startBrowser from "./browser/browser";
-import scraperController from "./pageController";
+import scraperController from "./scraper/pageController";
 
 const browser = startBrowser();
 

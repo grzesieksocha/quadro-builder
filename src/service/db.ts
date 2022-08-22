@@ -1,5 +1,5 @@
 import sqlite3 from "sqlite3";
-import { SetType } from "../objects";
+import { SetType } from "../interface/set";
 
 export async function insertConstructionKit(
   name: string,

@@ -1,6 +1,6 @@
 import { NodeFor, Page } from "puppeteer";
-import { Set, SetType } from "../objects";
-import getImages from "../pictureExtractor";
+import { Set, SetType } from "../interface/set";
+import getImages from "../service/pictureExtractor";
 import { insertConstructionKit } from "../service/db";
 
 const URL = "https://quadromdb.com/";

@@ -1,5 +1,5 @@
 import { Browser } from "puppeteer";
-import getSet from "./scraper/set";
+import getSet from "./set";
 
 const CONSTRUCTION_KIT_ROW_SELECTOR = ".kit.views-row";
 const EXTENSION_ROW_SELECTOR = ".expansion.views-row";

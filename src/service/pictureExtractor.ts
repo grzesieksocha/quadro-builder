@@ -1,6 +1,6 @@
 import { Page } from "puppeteer";
-import { Set } from "./objects";
-import { fileExists, saveFile } from "./service/fileSaver";
+import { Set } from "../interface/set";
+import { fileExists, saveFile } from "./fileSaver";
 
 export default async function getImages(page: Page, kits: Set[]) {
   for (const kit of kits) {
