@@ -1,16 +1,16 @@
 import { NodeFor, Page } from "puppeteer";
-import { Set, SetType } from "../interface/set";
+import { Set, SetType } from "../interface/objects";
 import getImages from "../service/pictureExtractor";
-import { insertConstructionKit } from "../service/db";
+import { insertSet } from "../service/db";
 
 const URL = "https://quadromdb.com/";
 
-async function getSet(
+async function getConstructionKit(
   page: Page,
   selector: string,
   type: SetType
 ): Promise<void> {
-  page.goto(URL);
+  await page.goto(URL);
   await page.waitForSelector(".views-element-container");
 
   const sets = await page.$$eval(
@@ -44,10 +44,10 @@ async function getSet(
   );
 
   for (const set of sets) {
-    insertConstructionKit(set.name, set.type, set.url, set.pictureName);
+    insertSet(set.name, set.type, set.url, set.pictureName);
   }
 
   await getImages(page, sets);
 }
 
-export default getSet;
+export default getConstructionKit;

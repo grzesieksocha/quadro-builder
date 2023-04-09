@@ -1,9 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import startBrowser from "./browser/browser";
-import scraperController from "./scraper/pageController";
+import run from "./app";
 
-const browser = startBrowser();
-
-scraperController(browser);
+run();

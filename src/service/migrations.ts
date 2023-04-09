@@ -1,19 +1,21 @@
 import * as dotenv from "dotenv";
+import fs from "fs";
+
 dotenv.config();
 
-import sqlite3, { Database, OPEN_READWRITE } from "sqlite3";
+import sqlite3, { Database } from "better-sqlite3";
 
 export function runMigrations() {
-  console.log(process.env.DB_URL);
-
-  const db = new sqlite3.Database(process.env.DB_URL, OPEN_READWRITE);
+  const db = new sqlite3(process.env.DB_URL);
 
   createSetsDb(db);
   createDesignsDb(db);
+
+  db.close();
 }
 
 function createSetsDb(db: Database) {
-  db.run(
+  const stmt = db.prepare(
     `CREATE TABLE IF NOT EXISTS sets (
       id INTEGER PRIMARY KEY,
       type TEXT NOT NULL,
@@ -22,10 +24,12 @@ function createSetsDb(db: Database) {
       picture TEXT NOT NULL UNIQUE
     );`
   );
+
+  stmt.run();
 }
 
 function createDesignsDb(db: Database) {
-  db.run(
+  const stmt = db.prepare(
     `CREATE TABLE IF NOT EXISTS designs (
       id INTEGER PRIMARY KEY,
       code TEXT NOT NULL UNIQUE,
@@ -34,9 +38,11 @@ function createDesignsDb(db: Database) {
       url TEXT NOT NULL UNIQUE,
       picture TEXT NOT NULL UNIQUE,
       age INTEGER NOT NULL,
-      time INTEGER NOT NULL
+      time_to_build INTEGER NOT NULL
     );`
   );
+
+  stmt.run();
 }
 
 runMigrations();

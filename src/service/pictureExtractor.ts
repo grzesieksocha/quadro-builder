@@ -1,5 +1,5 @@
 import { Page } from "puppeteer";
-import { Set } from "../interface/set";
+import { Set } from "../interface/objects";
 import { fileExists, saveFile } from "./fileSaver";
 
 export default async function getImages(page: Page, kits: Set[]) {
