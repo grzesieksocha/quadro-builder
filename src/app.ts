@@ -21,7 +21,7 @@ export default async function run() {
   );
   await getConstructionKit(page, EXTENSION_ROW_SELECTOR, "extension");
 
-  // const sets = getSets(page);
+  await getSets(page);
 
   await page.close();
   await browser.close();

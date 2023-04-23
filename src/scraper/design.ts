@@ -1,52 +1,34 @@
-import { NodeFor, Page } from "puppeteer";
+import { Page, NodeFor } from "puppeteer";
 import { Set } from "../interface/objects";
 import { Design } from "../interface/objects";
-import { insertDesign } from "../service/db";
 
-const DESIGN_SELECTOR = ".view-mdb-designs .views-row";
+async function getDesignsForSet(page: Page, set: Set) {
+  await page.goto(set.url);
+  await page.waitForSelector(".view-mdb-designs");
 
-async function getDesignsForSet(page: Page, set: Set): Promise<Design[]> {
-  page.goto(set.url);
-  await page.waitForSelector(".views-element-container");
+  const designs = await page.$$eval(
+    ".view-mdb-designs .views-row",
+    (elements) => {
+      const designAdder = (el: NodeFor<string>): Design => {
+        const name = el.querySelector(".mdb-cat-meta-title")?.innerHTML ?? "";
 
-  const designs = await page.$$eval(DESIGN_SELECTOR, (designDivs) => {
-    const designs: Design[] = [];
-
-    const designAdder = (el: NodeFor<string>) => {
-      const url = el.querySelector("a").href;
-      const code = el.querySelector(".mdb-cat-meta-code").innerHTML;
-      const name = el.querySelector(".mdb-cat-meta-title").innerHTML;
-      const age = el.querySelector(".mdb-cat-meta-age").innerHTML;
-      const timeToBuild = el.querySelector(".mdb-cat-meta-time span").innerHTML;
-      const pictureURL = el.querySelector("picture img").src;
-      const type = "core"; // @todo change
-
-      if (url) {
-        designs.push({
-          code,
+        return {
+          code: el.querySelector(".mdb-cat-meta-code")?.innerHTML ?? "",
           name,
-          type,
-          url,
-          pictureURL,
+          type: "core",
+          url: el.querySelector("a").href ?? "",
+          pictureURL: el.querySelector("picture img").src ?? "",
           pictureName: `${name.toLowerCase().replace(/ /g, "_")}.png`,
-          age: 1,
-          timeToBuild,
-        });
-      }
-    };
+          age: el.querySelector(".mdb-cat-meta-age span")?.innerHTML ?? "",
+          timeToBuild:
+            el.querySelector(".mdb-cat-meta-time span")?.innerHTML ?? "",
+        };
+      };
 
-    designDivs.forEach((el) => {
-      designAdder(el);
-    });
+      return elements.map((el) => designAdder(el));
+    }
+  );
 
-    return designs;
-  });
-
-  for (const design of designs) {
-    insertDesign(design);
-  }
-
-  // await getImages(page, sets);
   return designs;
 }
 

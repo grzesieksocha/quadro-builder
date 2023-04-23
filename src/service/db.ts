@@ -28,7 +28,7 @@ export function insertDesign(design: Design) {
   const db = getDatabase();
 
   const stmt = db.prepare(
-    "INSERT or IGNORE INTO designs (code, name, type, url, picture, age, time) VALUES (:code, :name, :type, :url, :picture, :age, :time);"
+    "INSERT OR IGNORE INTO designs (code, name, type, url, picture, age, time_to_build) VALUES (:code, :name, :type, :url, :picture, :age, :time_to_build);"
   );
 
   return stmt.run({
@@ -38,20 +38,24 @@ export function insertDesign(design: Design) {
     url: design.url,
     picture: design.pictureName,
     age: design.age,
-    time: design.timeToBuild,
+    time_to_build: design.timeToBuild,
   });
 }
 
-export function getSets(page: Page) {
+export async function getSets(page: Page) {
   const db = getDatabase();
 
   const sets: Set[] = [];
 
   const stmt = db.prepare("SELECT * FROM sets;");
 
-  for (const set in stmt.all()) {
-    // getDesignsForSet(page, set);
+  for (const set of stmt.all()) {
+    const designs = await getDesignsForSet(page, set);
+
+    designs.forEach((design) => {
+      if (design.url) insertDesign(design);
+    });
   }
 
-  // return sets;
+  return sets;
 }

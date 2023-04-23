@@ -34,9 +34,7 @@ async function getConstructionKit(
         }
       };
 
-      setDivs.forEach((el) => {
-        setAdder(el);
-      });
+      setDivs.forEach((el) => setAdder(el));
 
       return sets;
     },
