@@ -1,9 +1,8 @@
 import { Page, NodeFor } from "puppeteer";
-import { Set } from "../interface/objects";
 import { Design } from "../interface/objects";
 
-async function getDesignsForSet(page: Page, set: Set) {
-  await page.goto(set.url);
+async function getDesignsForSet(page: Page, url: string) {
+  await page.goto(url);
   await page.waitForSelector(".view-mdb-designs");
 
   const designs = await page.$$eval(

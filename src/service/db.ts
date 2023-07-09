@@ -1,61 +1,85 @@
 import { Page } from "puppeteer";
 import { Design } from "../interface/objects";
 import { SetType } from "../interface/objects";
-import { Set } from "../interface/objects";
 import getDesignsForSet from "../scraper/design";
-import sqlite3 from "better-sqlite3";
+import prisma from '../main';
+import { Prisma } from "@prisma/client";
 
-function getDatabase() {
-  return new sqlite3(process.env.DB_URL);
-}
-
-export function insertSet(
+export async function insertSet(
   name: string,
   type: SetType,
   url: string,
   picture: string
 ) {
-  const db = getDatabase();
+  try {
+    await prisma.set.create(
+      {
+        data: {
+          url,
+          name,
+          type,
+          picture,
+        }
+      }
+    );
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === 'P2002') {
+        console.log('Set exists');
 
-  const stmt = db.prepare(
-    "INSERT or IGNORE INTO sets (name, type, url, picture) VALUES (:name, :type, :url, :picture);"
-  );
+        return;
+      }
+    }
 
-  return stmt.run({ name, type, url, picture });
+    throw e;
+  }
 }
 
-export function insertDesign(design: Design) {
-  const db = getDatabase();
+export async function insertDesign(design: Design) {
+  console.log(design.age)
+  console.log(design.timeToBuild)
+  try {
+    await prisma.design.create(
+      {
+        data: {
+          code: design.code,
+          name: design.name,
+          type: design.type,
+          url: design.url,
+          picture: design.pictureName,
+          age: 0, // string fix later if needed
+          time_to_build: 0, // string - fix later if needed
+        }
+      }
+    )
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === 'P2002') {
+        console.log('Design exists');
 
-  const stmt = db.prepare(
-    "INSERT OR IGNORE INTO designs (code, name, type, url, picture, age, time_to_build) VALUES (:code, :name, :type, :url, :picture, :age, :time_to_build);"
-  );
+        return;
+      }
+    }
 
-  return stmt.run({
-    code: design.code,
-    name: design.name,
-    type: design.type,
-    url: design.url,
-    picture: design.pictureName,
-    age: design.age,
-    time_to_build: design.timeToBuild,
-  });
+    throw e;
+  }
 }
 
 export async function getSets(page: Page) {
-  const db = getDatabase();
+  const allSets = await prisma.set.findMany(
+    {
+      select: {
+        url: true
+      },
+    }
+  )
 
-  const sets: Set[] = [];
-
-  const stmt = db.prepare("SELECT * FROM sets;");
-
-  for (const set of stmt.all()) {
-    const designs = await getDesignsForSet(page, set);
+  for (const set of allSets) {
+    console.log(set);
+    const designs = await getDesignsForSet(page, set.url);
 
     designs.forEach((design) => {
       if (design.url) insertDesign(design);
     });
   }
-
-  return sets;
 }

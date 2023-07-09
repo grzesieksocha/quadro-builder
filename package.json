@@ -1,14 +1,14 @@
 {
   "dependencies": {
-    "better-sqlite3": "^8.0",
+    "@prisma/client": "^4.0.0",
     "dotenv": "^16.0",
-    "puppeteer": "^19.0"
+    "puppeteer": "^20.0.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
     "start": "ts-node src/main.ts",
-    "migrate": "ts-node src/service/migrations.ts"
+    "migrate": "prisma migrate dev"
   },
   "name": "quadro_builder",
   "version": "1.0.0",
@@ -16,12 +16,12 @@
   "license": "MIT",
   "devDependencies": {
     "@tsconfig/node18": "^1.0",
-    "@types/better-sqlite3": "^7.6.3",
     "@types/node": "^18.0",
     "@typescript-eslint/eslint-plugin": "^5.0",
     "@typescript-eslint/parser": "^5.0",
     "eslint": "^8.0",
     "prettier": "^2.0",
+    "prisma": "^4.0.0",
     "ts-node": "^10.0",
     "typescript": "^5.0"
   }

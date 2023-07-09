@@ -7,7 +7,7 @@ const EXTENSION_ROW_SELECTOR = ".expansion.views-row";
 
 export default async function run() {
   const browser = await launch({
-    headless: true,
+    headless: "new",
     args: ["--disable-setuid-sandbox"],
     ignoreHTTPSErrors: true,
   });
