@@ -1,6 +1,9 @@
 import { launch } from "puppeteer";
-import getConstructionKit from "./scraper/set";
-import { getSets } from "./service/db";
+import saveSets from "./scraper/set";
+import { saveDesigns } from "./service/db";
+import connectDesignsWithSets from "./service/designSetConnector";
+import { describe } from "node:test";
+import prisma from "./main";
 
 const CONSTRUCTION_KIT_ROW_SELECTOR = ".kit.views-row";
 const EXTENSION_ROW_SELECTOR = ".expansion.views-row";
@@ -14,14 +17,21 @@ export default async function run() {
 
   const page = await browser.newPage();
 
-  await getConstructionKit(
-    page,
-    CONSTRUCTION_KIT_ROW_SELECTOR,
-    "construction_kit"
-  );
-  await getConstructionKit(page, EXTENSION_ROW_SELECTOR, "extension");
+  if (!((await prisma.set.count()) > 0)) {
+    console.log("Saving SETS!");
 
-  await getSets(page);
+    await saveSets(page, CONSTRUCTION_KIT_ROW_SELECTOR, "construction_kit");
+
+    await saveSets(page, EXTENSION_ROW_SELECTOR, "extension");
+  }
+
+  if (!((await prisma.design.count()) > 0)) {
+    console.log("Saving DESIGNS!");
+
+    await saveDesigns(page);
+  }
+
+  await connectDesignsWithSets();
 
   await page.close();
   await browser.close();

@@ -2,17 +2,11 @@
   "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "typeRoots": [
-      "./src/types"
-    ]
+    "typeRoots": ["./src/types"]
   },
   "ts-node": {
     "files": true
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

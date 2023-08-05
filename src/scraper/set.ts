@@ -5,7 +5,7 @@ import { insertSet } from "../service/db";
 
 const URL = "https://quadromdb.com/";
 
-async function getConstructionKit(
+async function saveSets(
   page: Page,
   selector: string,
   type: SetType
@@ -48,4 +48,4 @@ async function getConstructionKit(
   await getImages(page, sets);
 }
 
-export default getConstructionKit;
+export default saveSets;
