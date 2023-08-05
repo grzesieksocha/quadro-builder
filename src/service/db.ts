@@ -36,8 +36,6 @@ export async function insertSet(
 }
 
 export async function insertDesign(design: Design) {
-  console.log(design.age)
-  console.log(design.timeToBuild)
   try {
     await prisma.design.create(
       {
@@ -75,7 +73,6 @@ export async function getSets(page: Page) {
   )
 
   for (const set of allSets) {
-    console.log(set);
     const designs = await getDesignsForSet(page, set.url);
 
     designs.forEach((design) => {

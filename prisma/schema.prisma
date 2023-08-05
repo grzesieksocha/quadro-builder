@@ -16,6 +16,7 @@ model Design {
   picture       String @unique
   age           Int
   time_to_build Int
+  sets          Set[]
 }
 
 model Set {
@@ -24,4 +25,5 @@ model Set {
   name    String @unique
   type    String
   picture String @unique
+  designs Design[]
 }
