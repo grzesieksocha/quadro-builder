@@ -1,15 +1,15 @@
-import { NodeFor, Page } from "puppeteer";
+import { NodeFor } from "puppeteer";
 import { Set, SetType } from "../interface/objects";
 import getImages from "../service/pictureExtractor";
 import { insertSet } from "../service/db";
+import browserSingleton from "../service/browserSingleton";
 
 const URL = "https://quadromdb.com/";
 
-async function saveSets(
-  page: Page,
-  selector: string,
-  type: SetType
-): Promise<void> {
+async function saveSets(selector: string, type: SetType): Promise<void> {
+  const browser = await browserSingleton.getBrowser();
+  const page = await browser.newPage();
+
   await page.goto(URL);
   await page.waitForSelector(".views-element-container");
 
@@ -41,11 +41,13 @@ async function saveSets(
     type
   );
 
+  await page.close();
+
   for (const set of sets) {
     insertSet(set.name, set.type, set.url, set.pictureName);
   }
 
-  await getImages(page, sets);
+  await getImages(sets);
 }
 
 export default saveSets;

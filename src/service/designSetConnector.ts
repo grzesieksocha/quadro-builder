@@ -1,4 +1,4 @@
-import prisma from "../main";
+import { prisma } from "../main";
 
 export default async function connectDesignsWithSets() {
   const designs = await prisma.design.findMany();

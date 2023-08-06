@@ -1,8 +1,7 @@
-import { Page } from "puppeteer";
 import { Design } from "../interface/objects";
 import { SetType } from "../interface/objects";
 import getDesignsForSet from "../scraper/design";
-import prisma from "../main";
+import { prisma } from "../main";
 import { Prisma } from "@prisma/client";
 
 export async function insertSet(
@@ -59,7 +58,7 @@ export async function insertDesign(design: Design) {
   }
 }
 
-export async function saveDesigns(page: Page) {
+export async function saveDesigns() {
   const allSets = await prisma.set.findMany({
     select: {
       url: true,
@@ -67,7 +66,7 @@ export async function saveDesigns(page: Page) {
   });
 
   for (const set of allSets) {
-    const designs = await getDesignsForSet(page, set.url);
+    const designs = await getDesignsForSet(set.url);
 
     designs.forEach((design) => {
       if (design.url) insertDesign(design);

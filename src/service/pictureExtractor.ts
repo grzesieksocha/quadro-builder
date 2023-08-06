@@ -1,8 +1,11 @@
-import { Page } from "puppeteer";
 import { Set } from "../interface/objects";
 import { fileExists, saveFile } from "./fileSaver";
+import browserSingleton from "./browserSingleton";
 
-export default async function getImages(page: Page, kits: Set[]) {
+export default async function getImages(kits: Set[]) {
+  const browser = await browserSingleton.getBrowser();
+  const page = await browser.newPage();
+
   for (const kit of kits) {
     const folder = `data/picture/${kit.type}`;
 
@@ -21,4 +24,6 @@ export default async function getImages(page: Page, kits: Set[]) {
       }
     }
   }
+
+  await page.close();
 }

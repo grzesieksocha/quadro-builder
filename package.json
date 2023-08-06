@@ -1,7 +1,7 @@
 {
   "name": "quadro_builder",
   "version": "1.0.0",
-  "main": "src/main.js",
+  "main": "src/main.ts",
   "license": "MIT",
   "engines": {
     "node": "^20.0.0"

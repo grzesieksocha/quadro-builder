@@ -1,7 +1,11 @@
-import { Page, NodeFor } from "puppeteer";
+import { NodeFor } from "puppeteer";
 import { Design } from "../interface/objects";
+import browserSingleton from "../service/browserSingleton";
 
-async function getDesignsForSet(page: Page, url: string) {
+async function getDesignsForSet(url: string) {
+  const browser = await browserSingleton.getBrowser();
+  const page = await browser.newPage();
+
   await page.goto(url);
   await page.waitForSelector(".view-mdb-designs");
 
@@ -27,6 +31,8 @@ async function getDesignsForSet(page: Page, url: string) {
       return elements.map((el) => designAdder(el));
     }
   );
+
+  await page.close();
 
   return designs;
 }
