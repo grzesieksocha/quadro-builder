@@ -22,8 +22,8 @@
     "puppeteer": "^20.0.0"
   },
   "devDependencies": {
-    "@tsconfig/node18": "^1.0",
-    "@types/node": "^18.0",
+    "@tsconfig/node20": "^1.0",
+    "@types/node": "^20.0",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
     "eslint": "^8.46.0",

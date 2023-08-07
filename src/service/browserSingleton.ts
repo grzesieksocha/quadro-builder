@@ -26,7 +26,7 @@ class BrowserSingleton {
       return;
     }
 
-    this.instance.close();
+    await this.instance.close();
     this.instance = null;
 
     return;

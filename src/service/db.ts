@@ -68,8 +68,38 @@ export async function saveDesigns() {
   for (const set of allSets) {
     const designs = await getDesignsForSet(set.url);
 
-    designs.forEach((design) => {
-      if (design.url) insertDesign(design);
+    for (const design of designs) {
+      if (design.url) await insertDesign(design);
+    }
+  }
+}
+
+export async function connectSetWithDesign(setId: number, designCode: string) {
+  try {
+    await prisma.set.update({
+      where: {
+        id: setId,
+      },
+      data: {
+        designs: {
+          connect: {
+            code: designCode,
+          },
+        },
+      },
+      include: {
+        designs: true,
+      },
     });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2025") {
+        console.log(`Unknown code ${designCode} for set ${setId}`);
+
+        return;
+      }
+    }
+
+    throw e;
   }
 }
